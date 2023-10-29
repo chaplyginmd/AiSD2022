@@ -11,8 +11,8 @@
 using namespace std;
 
 
-//-----Реализация односвязного списка-----//
-//звено односвязного списка
+//-----Realization of a linked list-----
+//node of a linked kist
 template <typename T>
 struct Node
 {
@@ -24,16 +24,16 @@ struct Node
 	~Node() {};
 };
 
-/// @brief односвязный список
+//linked list class
 template<typename T>
 class List
 {
-	//указатель на первый элемент списка
+	//the pointer of a first list element
 	Node<T>* _first = nullptr;
 
 public:
 
-	//найти указатель на элемент по его значению, если такой есть
+	//find a pointer of an element by its value, if its contains
 	Node<T>* find(T target_val)
 	{
 		if (!_first) return nullptr;
@@ -48,7 +48,7 @@ public:
 		return nullptr;
 	}
 
-	//добавить элемент в список
+	//insert an element in list
 	void insert(T v)
 	{
 		Node<T>* new_node = new Node(v);
@@ -56,7 +56,7 @@ public:
 		_first = new_node;
 	}
 
-	//возвращает указатель на предыдущий к элементу, чье значение передается, если такой есть
+	//return a pointer of previous of an element whose value is passed, if its contains
 	Node<T>* prev(T v)
 	{
 		if (!_first || !_first->next) return nullptr;
@@ -71,7 +71,7 @@ public:
 		return nullptr;
 	}
 
-	//удалить элемент по его значению, если такой есть
+	//delete an element from the list by its value, if its contains
 	void erase(T v)
 	{
 		if (!_first) return;
@@ -94,7 +94,7 @@ public:
 		prev_res_find->next = next_res_find;
 	}
 
-	//вывести список в cout
+	//show the list (cout)
 	void show()
 	{
 		auto p = _first;
@@ -121,8 +121,8 @@ public:
 };
 
 
-//-----Реализация двоичного дерева поиска-----
-//'лист' двоичного дерева
+//-----Realization of a binary search tree-----
+//a 'leaf' of binary tree
 template<typename T>
 struct Leaf
 {
@@ -136,12 +136,13 @@ struct Leaf
 	~Leaf(){}
 };
 
-//класс, реализующий структуру двоичного дерева
+//a binary search tree class
 template<typename T>
 class Bin_tree
 {
 	Leaf<T>* _root = nullptr;
 
+	//erase all tree
 	Leaf<T>* make_empty(Leaf<T>* t)
 	{
 		if (!t) return nullptr;
@@ -153,6 +154,7 @@ class Bin_tree
 		return nullptr;
 	}
 
+	//return a min element of the tree
 	Leaf<T>* min(Leaf<T>* t)
 	{
 		if (!t) return nullptr;
@@ -160,6 +162,7 @@ class Bin_tree
 		else return min(t->left);
 	}
 
+	//return a max element of the tree
 	Leaf<T>* max(Leaf<T>* t)
 	{
 		if (!t) return nullptr;
@@ -167,6 +170,7 @@ class Bin_tree
 		else return max(t->right);
 	}
 
+	//insert an element in the tree
 	Leaf<T>* insert(T x, Leaf<T>* t)
 	{
 		if (!t) t = new Leaf<T>(x);
@@ -174,7 +178,8 @@ class Bin_tree
 		else if (x > t->val) t->right = insert(x, t->right);
 		return t;
 	}
-
+	
+	//remove an element from the tree
 	Leaf<T>* remove(T x, Leaf<T>* t) {
 		Leaf<T>* temp;
 		if (!t) return nullptr;
@@ -202,6 +207,7 @@ class Bin_tree
 		return t;
 	}
 
+	//show the tree (cout)
 	void traverse(Leaf<T>* t) {
 		if (!t) return;
 		traverse(t->left);
@@ -210,7 +216,7 @@ class Bin_tree
 	}
 
 public:
-	//найти указатель на элемент по его значению, если такой есть
+	//find a pointer of an element by its value, if its contains
 	Leaf<T>* find(T target_val)
 	{
 		if (!_root) return nullptr;
@@ -224,34 +230,38 @@ public:
 		return nullptr;
 	}
 
-	//возвращает указатель на минимальный элемент дерева
+	//return a min element of the tree
 	Leaf<T>* min()
 	{
 		return min(_root);
 	}
 
-	//возвращает указатель на максимальный элемент дерева
+	//return a max element of the tree
 	Leaf<T>* max()
 	{
 		return max(_root);
 	}
 
+	//insert an element in the tree
 	void insert(T x)
 	{
 		_root = insert(x, _root);
 	}
 
+	//remove an element from the tree
 	void remove(T x)
 	{
 		_root = remove(x, _root);
 	}
 
+	//show the tree (cout)
 	void show()
 	{
 		traverse(_root);
 		cout << endl;
 	}
 
+	//constructors and destructors
 	Bin_tree(){}
 	~Bin_tree()
 	{
@@ -260,52 +270,38 @@ public:
 
 };
 
-template<typename T>
-bool compare(T x, T y)
-{
-	return x > y ? 1 : 0;
-}
-
-
-
-//-----Реализация неубывающей пирамиды-----
-//класс неубывающей пирамиды
+//-----Realization of a non-decreasing heap-----
+//non-decreasing heap class
 template<typename T>
 struct PQ
 {
-	//количество элементов очереди
+	//quantity of elements of the heap
 	size_t _q_size = 0;
-	//тело очереди
+	//body of the heap
 	vector<T> _q;
 
-	//меняет местами содержимое, находящееся на i-ой и j-ой позиции в пирамиде 
+	//swap 2 elements by its numbers
 	void _swap(size_t i, size_t j)
 	{
-		//_q[i] = x, _q[j] = y
-		//_q[j] = _q[j] ^ (_q[i] = _q[i] ^ (_q[j] = _q[i] ^ _q[j]));
-
-		T temp;
-		temp = _q[i];
-		_q[i] = _q[j];
-		_q[j] = temp;
+		swap(_q[i], _q[j]);
 	}
 
-	//подянть элемент с позиции k в нужную иерархическую позицию
+	//elevate an element from position k to nessesary hierarchical position
 	void _bubble_up(size_t k)
 	{
 		int par_k = parent(k);
-		if (par_k == -1) return;//корень
+		if (par_k == -1) return;//root
 		if (_q[par_k] > _q[k]) _swap(k, par_k);
 		_bubble_up(par_k);
 	}
 
-	//опустить элемент с позиции k в нужную иерархическую позицию
+	//drop an element from position k to nessesary hierarchical position
 	void _bubble_down(size_t k)
 	{ 
 		size_t
-			//индекс потомка
+			//index of one of the children
 			c = young_child(k),
-			//индекс наименьшего потомка
+			//index of the least child
 			min_index = k;
 		for (size_t i = 0; i <= 1; ++i)
 		{
@@ -318,20 +314,19 @@ struct PQ
 		}
 	}
 
-	/////////////
-	//возвращает позицию предка для узла с номером k
+	//return position of the parent for node with position k
 	int parent(size_t k)
 	{
 		return k == 0 ? -1 : k / 2;
 	}
 
-	//возвращает позицию левого потомка для узла с номером k
+	//return position of the left child for node with position k
 	size_t young_child(size_t k)
 	{
 		return 2 * k;
 	}
 
-	//добавить элемент x в пирамиду, сохранив иерархию пирамиды
+	//insert element x in the heap
 	void insert(T x)
 	{
 		assert(_q_size <= _q.size());
@@ -340,20 +335,20 @@ struct PQ
 		_bubble_up(_q_size - 1);
 	}
 
-	//задать пирамиду массивом элементов
+	//make heap by vector of elements
 	void make(vector<T> s)
 	{
 		for (size_t i = 0; i < s.size(); ++i) this->insert(s[i]);
 	}
 
-	//алгоритм "быстрого" создания пирамиды
+	//fast creating of the heap
 	void make_fast(vector<T> s)
 	{
 		for (size_t i = 0; i < s.size(); ++i) _q.push_back(s[i]);
 		for (int i = _q_size - 1; i >= 0; --i) _bubble_down(i);
 	}
 
-	//возвращает и удаляет минимальный элемент пирамиды
+	//return and delete a min element from the heap
 	T extract_min()
 	{
 		assert(_q_size >= 0);
@@ -364,10 +359,12 @@ struct PQ
 		return min;
 	}
 
+	//constrictos and destructors
 	PQ(){}
 	PQ(size_t new_size): _q_size{new_size} {}
 	~PQ(){}
 };
+
 
 template<typename T>
 int heap_compare(PQ<T> q, size_t i, int count, T x)
@@ -383,7 +380,7 @@ int heap_compare(PQ<T> q, size_t i, int count, T x)
 
 
 
-//-----Реализация пирамидальной сортировки-----
+//-----Realization of heapsort-----
 template<typename T>
 void heapsort(vector<T>& s)
 {
@@ -392,8 +389,8 @@ void heapsort(vector<T>& s)
 	for (size_t i = 0; i < s.size(); ++i) s[i] = q.extract_min();
 }
 
-//-----Реализация сортировки слиянием-----
-// Объединяем два отсортированных подмассива `s[low…mid]` и `s[mid+1…high]`
+//-----Realization of mergesort-----
+// merge 2 sorted subarrays `s[low…mid]` и `s[mid+1…high]`
 template<typename T>
 void merge(vector<T>& s, size_t low, size_t mid, size_t high)
 {
@@ -414,7 +411,7 @@ void merge(vector<T>& s, size_t low, size_t mid, size_t high)
 	while (j < sz2) s[k++] = buffer2[j++];
 }
 
-//-----Сортировка слиянием-----
+//-----Mergsort-----
 template<typename T>
 void mergesort(vector<T>& s, size_t low, size_t high)
 {
@@ -429,7 +426,9 @@ void mergesort(vector<T>& s, size_t low, size_t high)
 }
 
 
-//-----Реализация быстрой сортировки-----
+//-----Realization of quicksort-----
+//divides an array by 2 subarrays and
+//returns the index of the element relative to which the split was performed
 template<typename T>
 int partition(vector<T>& s, int begin, int end)
 {
@@ -448,6 +447,7 @@ int partition(vector<T>& s, int begin, int end)
 	return pivot_index;
 }
 
+//-----Quicksort-----
 template<typename T>
 void quicksort(vector<T>& s, int start, int end)
 {
@@ -460,7 +460,7 @@ void quicksort(vector<T>& s, int start, int end)
 }
 
 
-//-----Двоичный поиск-----
+//-----Binary search-----
 template<typename T>
 int binary_search(vector<T> const& s, T key)
 {
